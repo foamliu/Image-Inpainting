@@ -57,6 +57,6 @@ if __name__ == '__main__':
 
         cv.imwrite('images/{}_input.png'.format(i), input)
         cv.imwrite('images/{}_output.png'.format(i), output)
-        cv.imwrite('images/{}_gt.png'.format(i), y)
+        cv.imwrite('images/{}_gt.png'.format(i), gt)
 
     K.clear_session()
