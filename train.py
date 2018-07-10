@@ -52,8 +52,7 @@ if __name__ == '__main__':
         if pretrained_path is not None:
             new_model.load_weights(pretrained_path)
 
-    adam = keras.optimizers.Adam(lr=5e-5, beta_1=0.9, beta_2=0.999, decay=3.5E-6)
-    new_model.compile(optimizer=adam, loss='mean_absolute_error')
+    new_model.compile(optimizer='nadam', loss='mean_absolute_error')
 
     print(new_model.summary())
 
