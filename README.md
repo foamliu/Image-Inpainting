@@ -4,7 +4,7 @@
 
 ## 原理
 
-
+![image](https://github.com/foamliu/Image-Impainting/raw/master/images/net.png)
 
 ## 数据集
 
