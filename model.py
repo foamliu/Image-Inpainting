@@ -6,9 +6,10 @@ from keras.utils import plot_model
 
 def build_model():
     encoder = ResNet50(include_top=False, weights='imagenet', pooling='avg')
-    input = encoder.input
+    inputs = encoder.inputs
+    outputs = encoder.outputs
 
-    model = Model(inputs=input, outputs=encoder)
+    model = Model(inputs=inputs, outputs=outputs)
     return model
 
 
