@@ -1,5 +1,5 @@
 import keras.backend as K
-from keras.applications.resnet50 import ResNet50
+from keras.applications.vgg19 import VGG19
 from keras.layers import UpSampling2D, Conv2D, Reshape
 from keras.models import Model
 from keras.utils import plot_model
@@ -8,16 +8,13 @@ from config import img_size, kernel
 
 
 def build_model():
-    image_encoder = ResNet50(input_shape=(img_size, img_size, kernel), include_top=False, weights='imagenet',
-                             pooling='avg')
+    image_encoder = VGG19(input_shape=(img_size, img_size, kernel), include_top=False, weights='imagenet', pooling='None')
     for layer in image_encoder.layers:
         layer.trainable = False
     inputs = image_encoder.inputs
     x = image_encoder.outputs
-    x = Reshape((1, 1, 2048))(x)
 
     # Decoder
-    x = UpSampling2D(size=(7, 7))(x)
     x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', name='deconv5_1',
                kernel_initializer='he_normal')(x)
     x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', name='deconv5_2',
