@@ -1,6 +1,6 @@
 import keras.backend as K
 from keras.applications.resnet50 import ResNet50
-from keras.layers import UpSampling2D, Conv2D
+from keras.layers import UpSampling2D, Conv2D, Reshape
 from keras.models import Model
 from keras.utils import plot_model
 
@@ -12,6 +12,7 @@ def build_model():
                              pooling='avg')
     inputs = image_encoder.inputs
     x = image_encoder.outputs
+    x = Reshape((1, 1, 2048))
 
     # Decoder
     x = UpSampling2D(size=(7, 7))(x)
