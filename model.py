@@ -12,7 +12,7 @@ def build_model():
                              pooling='avg')
     inputs = image_encoder.inputs
     x = image_encoder.outputs
-    x = Reshape((1, 1, 2048))
+    x = Reshape((1, 1, 2048))(x)
 
     # Decoder
     x = UpSampling2D(size=(7, 7))(x)
