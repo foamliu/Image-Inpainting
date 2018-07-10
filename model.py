@@ -42,9 +42,9 @@ def build_model():
                kernel_initializer='he_normal')(x)
 
     x = UpSampling2D(size=(2, 2))(x)
-    x = Conv2D(128, (kernel, kernel), activation='relu', padding='same', name='deconv2_1',
+    x = Conv2D(64, (kernel, kernel), activation='relu', padding='same', name='deconv2_1',
                kernel_initializer='he_normal')(x)
-    x = Conv2D(128, (kernel, kernel), activation='relu', padding='same', name='deconv2_2',
+    x = Conv2D(64, (kernel, kernel), activation='relu', padding='same', name='deconv2_2',
                kernel_initializer='he_normal')(x)
 
     x = UpSampling2D(size=(2, 2))(x)

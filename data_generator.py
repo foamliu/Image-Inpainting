@@ -24,8 +24,8 @@ def random_crop(image):
 def separate(image):
     x0, y0 = img_size // 4, img_size // 4
     x1, y1 = img_size * 3 // 4, img_size * 3 // 4
-    img_out = image[y0:y1, x0:x1]
-    img_in = image
+    img_out = image.copy()[y0:y1, x0:x1]
+    img_in = image.copy()
     img_in[y0:y1, x0:x1] = 255
     return img_in, img_out
 
