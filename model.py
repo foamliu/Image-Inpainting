@@ -1,14 +1,54 @@
 import keras.backend as K
 from keras.applications.resnet50 import ResNet50
+from keras.layers import UpSampling2D, Conv2D
 from keras.models import Model
 from keras.utils import plot_model
 
+from config import img_size, kernel
+
 
 def build_model():
-    encoder = ResNet50(include_top=False, weights='imagenet', pooling='avg')
-    inputs = encoder.inputs
-    outputs = encoder.outputs
+    image_encoder = ResNet50(input_shape=(img_size, img_size, kernel), include_top=False, weights='imagenet',
+                             pooling='avg')
+    inputs = image_encoder.inputs
+    x = image_encoder.outputs
 
+    # Decoder
+    x = UpSampling2D(size=(7, 7))(x)
+    x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', name='deconv5_1',
+               kernel_initializer='he_normal')(x)
+    x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', name='deconv5_2',
+               kernel_initializer='he_normal')(x)
+    x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', name='deconv5_3',
+               kernel_initializer='he_normal')(x)
+
+    x = UpSampling2D(size=(2, 2))(x)
+    x = Conv2D(256, (kernel, kernel), activation='relu', padding='same', name='deconv4_1',
+               kernel_initializer='he_normal')(x)
+    x = Conv2D(256, (kernel, kernel), activation='relu', padding='same', name='deconv4_2',
+               kernel_initializer='he_normal')(x)
+    x = Conv2D(256, (kernel, kernel), activation='relu', padding='same', name='deconv4_3',
+               kernel_initializer='he_normal')(x)
+
+    x = UpSampling2D(size=(2, 2))(x)
+    x = Conv2D(128, (kernel, kernel), activation='relu', padding='same', name='deconv3_1',
+               kernel_initializer='he_normal')(x)
+    x = Conv2D(128, (kernel, kernel), activation='relu', padding='same', name='deconv3_2',
+               kernel_initializer='he_normal')(x)
+    x = Conv2D(128, (kernel, kernel), activation='relu', padding='same', name='deconv3_3',
+               kernel_initializer='he_normal')(x)
+
+    x = UpSampling2D(size=(2, 2))(x)
+    x = Conv2D(128, (kernel, kernel), activation='relu', padding='same', name='deconv2_1',
+               kernel_initializer='he_normal')(x)
+    x = Conv2D(128, (kernel, kernel), activation='relu', padding='same', name='deconv2_2',
+               kernel_initializer='he_normal')(x)
+
+    x = UpSampling2D(size=(2, 2))(x)
+    x = Conv2D(3, (1, 1), activation='relu', padding='same', name='deconv1_1',
+               kernel_initializer='he_normal')(x)
+
+    outputs = x
     model = Model(inputs=inputs, outputs=outputs)
     return model
 
