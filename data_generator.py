@@ -2,22 +2,32 @@ import os
 import random
 from random import shuffle
 
-import cv2 as cv
 import imutils
+import keras
 import numpy as np
+from keras.preprocessing.image import (load_img, img_to_array)
 from keras.utils import Sequence
 
-from config import batch_size, img_size, channel
+from config import batch_size, img_rows, img_cols, img_size, channel
 
 image_folder = '/mnt/code/ImageNet-Downloader/image/resized'
 
 
-def random_crop(image_bgr):
-    full_size = image_bgr.shape[0]
-    u = random.randint(0, full_size - img_size // 2)
-    v = random.randint(0, full_size - img_size // 2)
-    y = image_bgr[v:v + img_size // 2, u:u + img_size // 2]
-    return y
+def random_crop(image):
+    full_size = image.shape[0]
+    u = random.randint(0, full_size - img_size)
+    v = random.randint(0, full_size - img_size)
+    image = image[v:v + img_size, u:u + img_size]
+    return image
+
+
+def separate(image):
+    x0, y0 = img_size // 4, img_size // 4
+    x1, y1 = img_size * 3 // 4, img_size * 3 // 4
+    img_out = image[y0:y1, x0:x1]
+    img_in = image
+    img_in[y0:y1, x0:x1] = 255
+    return img_in, img_out
 
 
 class DataGenSequence(Sequence):
@@ -42,38 +52,29 @@ class DataGenSequence(Sequence):
 
         length = min(batch_size, (len(self.names) - i))
         batch_x = np.empty((length, img_size, img_size, channel), dtype=np.float32)
-        batch_y_x2 = np.empty((length, img_size * 2, img_size * 2, channel), dtype=np.float32)
-        batch_y_x3 = np.empty((length, img_size * 3, img_size * 3, channel), dtype=np.float32)
-        batch_y_x4 = np.empty((length, img_size * 4, img_size * 4, channel), dtype=np.float32)
+        batch_y = np.empty((length, img_size // 2, img_size // 2, channel), dtype=np.float32)
 
         for i_batch in range(length):
-            name = self.names[i]
+            name = self.names[i + i_batch]
             filename = os.path.join(image_folder, name)
-            # b: 0 <=b<=255, g: 0 <=g<=255, r: 0 <=r<=255.
-            image_bgr = cv.imread(filename)
-
-            y = random_crop(image_bgr)
+            img = load_img(filename, target_size=(img_rows, img_cols))
+            img_array = img_to_array(img)
+            image = random_crop(img_array)
+            x, y = separate(image)
+            x = keras.applications.resnet50.preprocess_input(x)
 
             if np.random.random_sample() > 0.5:
+                x = np.fliplr(x)
                 y = np.fliplr(y)
 
             angle = random.choice((0, 90, 180, 270))
+            x = imutils.rotate_bound(x, angle)
             y = imutils.rotate_bound(y, angle)
 
-            x = cv.resize(y, (img_size, img_size), cv.INTER_CUBIC)
+            batch_x[i_batch, :, :] = x
+            batch_y[i_batch, :, :] = y
 
-            y_x2 = cv.resize(y, (img_size * 2, img_size * 2), cv.INTER_CUBIC)
-            y_x3 = cv.resize(y, (img_size * 3, img_size * 3), cv.INTER_CUBIC)
-            y_x4 = y
-
-            batch_x[i_batch, :, :] = preprocess_input(x.astype(np.float32))
-            batch_y_x2[i_batch, :, :] = y_x2
-            batch_y_x3[i_batch, :, :] = y_x3
-            batch_y_x4[i_batch, :, :] = y_x4
-
-            i += 1
-
-        return batch_x, [batch_y_x2, batch_y_x3, batch_y_x4]
+        return batch_x, batch_y
 
     def on_epoch_end(self):
         np.random.shuffle(self.names)

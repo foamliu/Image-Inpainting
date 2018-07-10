@@ -3,12 +3,14 @@ import os
 import random
 
 import cv2 as cv
+import keras
 import keras.backend as K
 import numpy as np
+from keras.preprocessing.image import (load_img, img_to_array)
 
+from config import img_rows, img_cols, img_size
+from data_generator import random_crop, separate
 from model import build_model
-from config import img_size, max_scale
-from data_generator import random_crop, preprocess_input
 
 if __name__ == '__main__':
     model_weights_path = 'models/model.16-21.4264.hdf5'
@@ -24,44 +26,35 @@ if __name__ == '__main__':
 
     samples = random.sample(names, 10)
 
-    h, w = img_size * max_scale, img_size * max_scale
-
     for i in range(len(samples)):
         image_name = samples[i]
         filename = os.path.join(image_folder, image_name)
         print('Start processing image: {}'.format(filename))
-        image_bgr = cv.imread(filename)
-        y = random_crop(image_bgr)
-
-        x = cv.resize(y, (img_size, img_size), cv.INTER_CUBIC)
+        img = load_img(filename, target_size=(img_rows, img_cols))
+        img_array = img_to_array(img)
+        image = random_crop(img_array)
+        x, y = separate(image)
         input = x.copy()
-        input_x4 = cv.resize(input, (img_size * max_scale, img_size * max_scale), cv.INTER_CUBIC)
-
-        x = preprocess_input(x.astype(np.float32))
+        x = keras.applications.resnet50.preprocess_input(x)
         x_test = np.empty((1, img_size, img_size, 3), dtype=np.float32)
         x_test[0] = x
         out = model.predict(x_test)
 
-        out_x2 = out[0][0]
-        out_x2 = np.clip(out_x2, 0.0, 255.0)
-        out_x2 = out_x2.astype(np.uint8)
-
-        out_x3 = out[1][0]
-        out_x3 = np.clip(out_x3, 0.0, 255.0)
-        out_x3 = out_x3.astype(np.uint8)
-
-        out_x4 = out[2][0]
-        out_x4 = np.clip(out_x4, 0.0, 255.0)
-        out_x4 = out_x4.astype(np.uint8)
+        out = out[0]
+        out = np.clip(out, 0.0, 255.0)
+        out = out.astype(np.uint8)
 
         if not os.path.exists('images'):
             os.makedirs('images')
 
+        output = input.copy()
+        output[56:168, 56:168] = output
+
+        input = cv.cvtColor(input, cv.COLOR_RGB2BGR)
+        output = cv.cvtColor(output, cv.COLOR_RGB2BGR)
+
         cv.imwrite('images/{}_input.png'.format(i), input)
-        cv.imwrite('images/{}_input_x4.png'.format(i), input_x4)
+        cv.imwrite('images/{}_output.png'.format(i), output)
         cv.imwrite('images/{}_gt.png'.format(i), y)
-        cv.imwrite('images/{}_out_x2.png'.format(i), out_x2)
-        cv.imwrite('images/{}_out_x3.png'.format(i), out_x3)
-        cv.imwrite('images/{}_out_x4.png'.format(i), out_x4)
 
     K.clear_session()
