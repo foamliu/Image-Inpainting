@@ -30,9 +30,10 @@ if __name__ == '__main__':
         image_name = samples[i]
         filename = os.path.join(image_folder, image_name)
         print('Start processing image: {}'.format(filename))
-        img = load_img(filename, target_size=(img_rows, img_cols))
-        img_array = img_to_array(img)
-        image = random_crop(img_array)
+        image = load_img(filename, target_size=(img_rows, img_cols))
+        image = img_to_array(image)
+        gt = image.copy()
+        image = random_crop(image)
         x, y = separate(image)
         input = x.copy()
         x = keras.applications.resnet50.preprocess_input(x)
@@ -50,6 +51,7 @@ if __name__ == '__main__':
         output = input.copy()
         output[56:168, 56:168] = output
 
+        gt = cv.cvtColor(gt, cv.COLOR_RGB2BGR)
         input = cv.cvtColor(input, cv.COLOR_RGB2BGR)
         output = cv.cvtColor(output, cv.COLOR_RGB2BGR)
 
