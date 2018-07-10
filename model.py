@@ -10,7 +10,7 @@ from config import img_size, kernel
 def build_model():
     image_encoder = ResNet50(input_shape=(img_size, img_size, kernel), include_top=False, weights='imagenet',
                              pooling='avg')
-    for layer in image_encoder.layers():
+    for layer in image_encoder.layers:
         layer.trainable = False
     inputs = image_encoder.inputs
     x = image_encoder.outputs
