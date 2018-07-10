@@ -1,11 +1,11 @@
 import keras.backend as K
-from keras.applications.vgg19 import VGG19
+from keras.applications.resnet50 import ResNet50
 from keras.models import Model
 from keras.utils import plot_model
 
 
 def build_model():
-    encoder = VGG19(include_top=False, weights='imagenet', pooling='avg')
+    encoder = ResNet50(include_top=False, weights='imagenet', pooling='avg')
     inputs = encoder.inputs
     outputs = encoder.outputs
 
