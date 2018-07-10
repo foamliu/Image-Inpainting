@@ -49,7 +49,7 @@ if __name__ == '__main__':
             os.makedirs('images')
 
         output = input.copy()
-        output[56:168, 56:168] = output
+        output[56:168, 56:168] = out
 
         gt = cv.cvtColor(gt, cv.COLOR_RGB2BGR)
         input = cv.cvtColor(input, cv.COLOR_RGB2BGR)
