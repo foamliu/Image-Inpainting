@@ -37,9 +37,9 @@ if __name__ == '__main__':
         x, y = separate(image)
         input = x.copy()
         x = cv.cvtColor(x, cv.COLOR_BGR2RGB)
-        x = preprocess_input(x)
         x_test = np.empty((1, img_size, img_size, 3), dtype=np.float32)
         x_test[0] = x
+        x_test = preprocess_input(x_test)
         out = model.predict(x_test)
 
         out = out[0]
