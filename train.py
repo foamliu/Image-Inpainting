@@ -3,6 +3,7 @@ import argparse
 import keras
 import tensorflow as tf
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
+from keras.optimizers import SGD
 from keras.utils import multi_gpu_model
 
 from config import patience, epochs, num_train_samples, num_valid_samples, batch_size
@@ -52,7 +53,8 @@ if __name__ == '__main__':
         if pretrained_path is not None:
             new_model.load_weights(pretrained_path)
 
-    new_model.compile(optimizer='nadam', loss='mean_squared_error')
+    sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True, clipnorm=5.)
+    new_model.compile(optimizer=sgd, loss='mean_squared_error')
 
     print(new_model.summary())
 
