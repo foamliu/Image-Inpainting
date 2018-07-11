@@ -67,9 +67,10 @@ class DataGenSequence(Sequence):
             x, y = separate(image)
 
             x = cv.cvtColor(x, cv.COLOR_BGR2RGB)
-            batch_x[i_batch, :, :] = preprocess_input(x)
-            batch_y[i_batch, :, :] = y / 255.
+            batch_x[i_batch] = x
+            batch_y[i_batch] = y / 255.
 
+        batch_x = preprocess_input(batch_x)
         return batch_x, batch_y
 
     def on_epoch_end(self):
