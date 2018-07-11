@@ -4,15 +4,16 @@ from keras.layers import UpSampling2D, Conv2D, Reshape
 from keras.models import Model
 from keras.utils import plot_model
 
-from config import img_size, kernel
+from config import img_size, channel, kernel
 
 
 def build_model():
-    image_encoder = VGG19(input_shape=(img_size, img_size, kernel), include_top=False, weights='imagenet', pooling='None')
+    image_encoder = VGG19(input_shape=(img_size, img_size, channel), include_top=False, weights='imagenet', pooling='None')
     for layer in image_encoder.layers:
         layer.trainable = False
     inputs = image_encoder.inputs
     x = image_encoder.outputs
+    print(x)
 
     # Decoder
     x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', name='deconv5_1',
