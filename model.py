@@ -14,7 +14,7 @@ def build_model():
     #    layer.trainable = False
     inputs = image_encoder.inputs
     x = image_encoder.layers[-1].output
-    print(x)
+    # print(x)
 
     # Decoder
     x = Conv2D(512, (kernel, kernel), padding='same', name='deconv5_1', kernel_initializer='he_normal')(x)
