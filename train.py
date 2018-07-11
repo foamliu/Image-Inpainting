@@ -52,7 +52,7 @@ if __name__ == '__main__':
         if pretrained_path is not None:
             new_model.load_weights(pretrained_path)
 
-    new_model.compile(optimizer='nadam', loss='mean_absolute_error')
+    new_model.compile(optimizer='nadam', loss='mean_squared_error')
 
     print(new_model.summary())
 

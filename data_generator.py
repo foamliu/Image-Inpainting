@@ -72,7 +72,7 @@ class DataGenSequence(Sequence):
             y = imutils.rotate_bound(y, angle)
 
             batch_x[i_batch, :, :] = x
-            batch_y[i_batch, :, :] = y
+            batch_y[i_batch, :, :] = y / 255.
 
         return batch_x, batch_y
 

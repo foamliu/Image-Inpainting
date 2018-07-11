@@ -42,7 +42,7 @@ if __name__ == '__main__':
         out = model.predict(x_test)
 
         out = out[0]
-        out = np.clip(out, 0.0, 255.0)
+        out = out * 255.0
         out = out.astype(np.uint8)
 
         if not os.path.exists('images'):
