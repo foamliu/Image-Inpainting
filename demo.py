@@ -23,7 +23,7 @@ if __name__ == '__main__':
     with open(names_file, 'r') as f:
         names = f.read().splitlines()
 
-    samples = random.sample(names, 10)
+    samples = random.sample(names, 1)
 
     for i in range(len(samples)):
         image_name = samples[i]
@@ -44,7 +44,7 @@ if __name__ == '__main__':
         out = model.predict(x_test)
 
         out = out[0]
-        print(out)
+        print('out: ' + str(out))
         out = out * 255.0
         out = out.astype(np.uint8)
 
