@@ -3,13 +3,11 @@ import os
 import random
 
 import cv2 as cv
-import keras
 import keras.backend as K
 import numpy as np
-import cv2 as cv
-from keras.preprocessing.image import (load_img, img_to_array)
 from keras.applications.vgg19 import preprocess_input
-from config import img_rows, img_cols, img_size
+
+from config import img_size
 from data_generator import random_crop, separate
 from model import build_model
 
@@ -39,15 +37,16 @@ if __name__ == '__main__':
         x = cv.cvtColor(x, cv.COLOR_BGR2RGB)
         x_test = np.empty((1, img_size, img_size, 3), dtype=np.float32)
         x_test[0] = x
+        print('x: ' + str(x))
         x_test = preprocess_input(x_test)
+        print('x_test: ' + str(x_test))
+
         out = model.predict(x_test)
 
         out = out[0]
         print(out)
         out = out * 255.0
-        print(out)
         out = out.astype(np.uint8)
-        print(out)
 
         if not os.path.exists('images'):
             os.makedirs('images')
