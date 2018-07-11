@@ -12,7 +12,7 @@ def build_model():
     for layer in image_encoder.layers:
         layer.trainable = False
     inputs = image_encoder.inputs
-    x = image_encoder.outputs
+    x = image_encoder.layers[-1].output
     print(x)
 
     # Decoder
