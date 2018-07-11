@@ -10,8 +10,8 @@ from config import img_size, channel, kernel
 def build_model():
     image_encoder = VGG19(input_shape=(img_size, img_size, channel), include_top=False, weights='imagenet',
                           pooling='None')
-    for layer in image_encoder.layers:
-        layer.trainable = False
+    # for layer in image_encoder.layers:
+    #    layer.trainable = False
     inputs = image_encoder.inputs
     x = image_encoder.layers[-1].output
     print(x)

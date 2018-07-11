@@ -2,13 +2,13 @@ import os
 import random
 from random import shuffle
 
+import cv2 as cv
 import imutils
-import keras
 import numpy as np
-from keras.preprocessing.image import (load_img, img_to_array)
+from keras.applications.vgg19 import preprocess_input
 from keras.utils import Sequence
 
-from config import batch_size, img_rows, img_cols, img_size, channel
+from config import batch_size, img_size, channel
 
 image_folder = '/mnt/code/ImageNet-Downloader/image/resized'
 
@@ -57,21 +57,17 @@ class DataGenSequence(Sequence):
         for i_batch in range(length):
             name = self.names[i + i_batch]
             filename = os.path.join(image_folder, name)
-            img = load_img(filename, target_size=(img_rows, img_cols))
-            img_array = img_to_array(img)
-            image = random_crop(img_array)
-            x, y = separate(image)
-            x = keras.applications.resnet50.preprocess_input(x)
-
+            image = cv.imread(filename)
+            image = random_crop(image)
             if np.random.random_sample() > 0.5:
-                x = np.fliplr(x)
-                y = np.fliplr(y)
-
+                image = np.fliplr(image)
             angle = random.choice((0, 90, 180, 270))
-            x = imutils.rotate_bound(x, angle)
-            y = imutils.rotate_bound(y, angle)
+            image = imutils.rotate_bound(image, angle)
 
-            batch_x[i_batch, :, :] = x
+            x, y = separate(image)
+
+            x = cv.cvtColor(x, cv.COLOR_BGR2RGB)
+            batch_x[i_batch, :, :] = preprocess_input(x)
             batch_y[i_batch, :, :] = y / 255.
 
         return batch_x, batch_y
@@ -91,7 +87,7 @@ def valid_gen():
 def split_data():
     names = [f for f in os.listdir(image_folder) if f.lower().endswith('.jpg')]
 
-    num_samples = len(names)  # 1341430
+    num_samples = len(names)
     print('num_samples: ' + str(num_samples))
 
     num_train_samples = int(num_samples * 0.992)
