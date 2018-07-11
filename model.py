@@ -1,6 +1,6 @@
 import keras.backend as K
 from keras.applications.vgg19 import VGG19
-from keras.layers import UpSampling2D, Conv2D, ELU
+from keras.layers import UpSampling2D, Conv2D, ELU, BatchNormalization
 from keras.models import Model
 from keras.utils import plot_model
 
@@ -18,32 +18,43 @@ def build_model():
 
     # Decoder
     x = Conv2D(512, (kernel, kernel), padding='same', name='deconv5_1', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
     x = ELU()(x)
     x = Conv2D(512, (kernel, kernel), padding='same', name='deconv5_2', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
     x = ELU()(x)
     x = Conv2D(512, (kernel, kernel), padding='same', name='deconv5_3', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
     x = ELU()(x)
 
     x = UpSampling2D(size=(2, 2))(x)
     x = Conv2D(256, (kernel, kernel), padding='same', name='deconv4_1', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
     x = ELU()(x)
     x = Conv2D(256, (kernel, kernel), padding='same', name='deconv4_2', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
     x = ELU()(x)
     x = Conv2D(256, (kernel, kernel), padding='same', name='deconv4_3', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
     x = ELU()(x)
 
     x = UpSampling2D(size=(2, 2))(x)
     x = Conv2D(128, (kernel, kernel), padding='same', name='deconv3_1', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
     x = ELU()(x)
     x = Conv2D(128, (kernel, kernel), padding='same', name='deconv3_2', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
     x = ELU()(x)
     x = Conv2D(128, (kernel, kernel), padding='same', name='deconv3_3', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
     x = ELU()(x)
 
     x = UpSampling2D(size=(2, 2))(x)
     x = Conv2D(64, (kernel, kernel), padding='same', name='deconv2_1', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
     x = ELU()(x)
     x = Conv2D(64, (kernel, kernel), padding='same', name='deconv2_2', kernel_initializer='he_normal')(x)
+    x = BatchNormalization()(x)
     x = ELU()(x)
 
     x = UpSampling2D(size=(2, 2))(x)
