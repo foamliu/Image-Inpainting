@@ -23,7 +23,7 @@ if __name__ == '__main__':
     with open(names_file, 'r') as f:
         names = f.read().splitlines()
 
-    samples = random.sample(names, 1)
+    samples = random.sample(names, 10)
 
     for i in range(len(samples)):
         image_name = samples[i]
@@ -37,14 +37,14 @@ if __name__ == '__main__':
         x = cv.cvtColor(x, cv.COLOR_BGR2RGB)
         x_test = np.empty((1, img_size, img_size, 3), dtype=np.float32)
         x_test[0] = x
-        print('x: ' + str(x))
+        # print('x: ' + str(x))
         x_test = preprocess_input(x_test)
-        print('x_test: ' + str(x_test))
+        # print('x_test: ' + str(x_test))
 
         out = model.predict(x_test)
 
         out = out[0]
-        print('out: ' + str(out))
+        # print('out: ' + str(out))
         out = out * 255.0
         out = out.astype(np.uint8)
 
