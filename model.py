@@ -132,20 +132,6 @@ def build_model():
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
 
-    x = UpSampling2D(size=(2, 2))(x)
-    the_shape = K.int_shape(orig_1)
-    shape = (1, the_shape[1], the_shape[2], the_shape[3])
-    origReshaped = Reshape(shape)(orig_1)
-    xReshaped = Reshape(shape)(x)
-    together = Concatenate(axis=1)([origReshaped, xReshaped])
-    x = Unpooling()(together)
-    x = Conv2D(64, (kernel, kernel), activation='relu', padding='same', name='deconv1_1',
-               kernel_initializer='he_uniform')(x)
-    x = BatchNormalization()(x)
-    x = Conv2D(64, (kernel, kernel), activation='relu', padding='same', name='deconv1_2',
-               kernel_initializer='he_uniform')(x)
-    x = BatchNormalization()(x)
-
     x = Conv2D(3, (1, 1), padding='same', name='pred', kernel_initializer='he_uniform')(x)
 
     outputs = x
