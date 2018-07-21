@@ -5,7 +5,7 @@ from random import shuffle
 import cv2 as cv
 import imutils
 import numpy as np
-from keras.applications.vgg19 import preprocess_input
+from keras.applications.vgg16 import preprocess_input
 from keras.utils import Sequence
 
 from config import batch_size, img_size, channel
@@ -68,7 +68,7 @@ class DataGenSequence(Sequence):
 
             x = cv.cvtColor(x, cv.COLOR_BGR2RGB)
             batch_x[i_batch] = x
-            batch_y[i_batch] = y / 255.
+            batch_y[i_batch] = y
 
         batch_x = preprocess_input(batch_x)
         return batch_x, batch_y
