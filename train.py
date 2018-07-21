@@ -53,8 +53,7 @@ if __name__ == '__main__':
         if pretrained_path is not None:
             new_model.load_weights(pretrained_path)
 
-    sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.9, nesterov=True, clipnorm=5.)
-    new_model.compile(optimizer=sgd, loss='mean_squared_error')
+    new_model.compile(optimizer='adam', loss='mean_squared_error')
 
     print(new_model.summary())
 
