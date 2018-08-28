@@ -26,7 +26,7 @@ def separate(image):
     x1, y1 = img_size * 3 // 4, img_size * 3 // 4
     img_out = image.copy()[y0:y1, x0:x1]
     img_in = image.copy()
-    img_in[y0:y1, x0:x1] = 0
+    img_in[y0:y1, x0:x1] = 128
     return img_in, img_out
 
 

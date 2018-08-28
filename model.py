@@ -4,9 +4,19 @@ from keras.layers import Input, ZeroPadding2D, Conv2D, UpSampling2D, BatchNormal
 from keras.models import Model
 from keras.utils import plot_model
 
-from config import channel, kernel
-from config import img_rows, img_cols
+from config import img_rows, img_cols, channel, kernel
 from custom_layers.unpooling_layer import Unpooling
+from utils import ensure_folder
+
+
+def ensure_yolo_weights():
+    import os
+    if not os.path.isfile('models/vgg16_notop.h5'):
+        ensure_folder('models')
+        import urllib.request
+        urllib.request.urlretrieve(
+            "https://github.com/fchollet/deep-learning-models/releases/download/v0.1/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5",
+            filename="models/vgg16_notop.h5")
 
 
 def build_model():
@@ -52,19 +62,6 @@ def build_model():
     x = Conv2D(512, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv5_3')(x)
     orig_5 = x
     x = MaxPooling2D((2, 2), strides=(2, 2))(x)
-
-    # Add Fully Connected Layer
-    x_fc = Flatten()(x)
-    x_fc = Dense(4096, activation='relu')(x_fc)
-    x_fc = Dropout(0.5)(x_fc)
-    x_fc = Dense(4096, activation='relu')(x_fc)
-    x_fc = Dropout(0.5)(x_fc)
-    x_fc = Dense(1000, activation='softmax')(x_fc)
-    model = Model(img_input, x_fc)
-
-    # Loads ImageNet pre-trained data
-    weights_path = 'models/vgg16_weights_tf_dim_ordering_tf_kernels.h5'
-    model.load_weights(weights_path, by_name=True)
 
     # Decoder
     x = UpSampling2D(size=(2, 2))(x)
@@ -136,6 +133,8 @@ def build_model():
 
     outputs = x
     model = Model(inputs=img_input, outputs=outputs)
+    ensure_yolo_weights()
+    model.load_weights('models/vgg16_notop.h5', by_name=True)
     return model
 
 
