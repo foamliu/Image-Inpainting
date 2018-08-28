@@ -31,3 +31,16 @@ def draw_str(dst, target, s):
     x, y = target
     cv.putText(dst, s, (x + 1, y + 1), cv.FONT_HERSHEY_PLAIN, 1.0, (0, 0, 0), thickness=2, lineType=cv.LINE_AA)
     cv.putText(dst, s, (x, y), cv.FONT_HERSHEY_PLAIN, 1.0, (255, 255, 255), lineType=cv.LINE_AA)
+
+
+def get_example_numbers():
+    if not os.path.isfile('train_names.txt'):
+        from data_generator import split_data
+        split_data()
+    with open('train_names.txt', 'r') as f:
+        names = f.read().splitlines()
+        num_train_samples = len(names)
+    with open('valid_names.txt', 'r') as f:
+        names = f.read().splitlines()
+        num_valid_samples = len(names)
+    return num_train_samples, num_valid_samples

@@ -5,10 +5,10 @@ import tensorflow as tf
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from keras.utils import multi_gpu_model
 
-from config import patience, epochs, num_train_samples, num_valid_samples, batch_size
+from config import patience, epochs, batch_size
 from data_generator import train_gen, valid_gen
 from model import build_model
-from utils import get_available_gpus
+from utils import get_available_gpus, ensure_folder, get_example_numbers
 
 if __name__ == '__main__':
     # Parse arguments
@@ -17,6 +17,7 @@ if __name__ == '__main__':
     args = vars(ap.parse_args())
     pretrained_path = args["pretrained"]
     checkpoint_models_path = 'models/'
+    ensure_folder(checkpoint_models_path)
 
     # Callbacks
     tensor_board = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=True)
@@ -59,6 +60,7 @@ if __name__ == '__main__':
     # Final callbacks
     callbacks = [tensor_board, model_checkpoint, early_stop, reduce_lr]
 
+    num_train_samples, num_valid_samples = get_example_numbers()
     # Start Fine-tuning
     new_model.fit_generator(train_gen(),
                             steps_per_epoch=num_train_samples // batch_size,

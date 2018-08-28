@@ -1,6 +1,6 @@
 import keras.backend as K
 from keras.layers import Input, ZeroPadding2D, Conv2D, UpSampling2D, BatchNormalization, MaxPooling2D, Reshape, \
-    Concatenate, Flatten, Dense, Dropout
+    Concatenate
 from keras.models import Model
 from keras.utils import plot_model
 
@@ -9,57 +9,63 @@ from custom_layers.unpooling_layer import Unpooling
 from utils import ensure_folder
 
 
-def ensure_yolo_weights():
+def ensure_vgg_weights():
     import os
-    if not os.path.isfile('models/vgg16_notop.h5'):
+    if not os.path.isfile('models/vgg19_notop.h5'):
         ensure_folder('models')
         import urllib.request
         urllib.request.urlretrieve(
-            "https://github.com/fchollet/deep-learning-models/releases/download/v0.1/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5",
-            filename="models/vgg16_notop.h5")
+            "https://github.com/fchollet/deep-learning-models/releases/download/v0.1/vgg19_weights_tf_dim_ordering_tf_kernels_notop.h5",
+            filename="models/vgg19_notop.h5")
 
 
 def build_model():
     # Encoder
     img_input = Input(shape=(img_rows, img_cols, channel))
     x = ZeroPadding2D((1, 1))(img_input)
-    x = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv1_1')(x)
+    x = Conv2D(64, (3, 3), activation='relu', name='block1_conv1')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(64, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv1_2')(x)
+    x = Conv2D(64, (3, 3), activation='relu', name='block1_conv2')(x)
     orig_1 = x
     x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv2_1')(x)
+    x = Conv2D(128, (3, 3), activation='relu', name='block2_conv1')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(128, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv2_2')(x)
+    x = Conv2D(128, (3, 3), activation='relu', name='block2_conv2')(x)
     orig_2 = x
     x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv3_1')(x)
+    x = Conv2D(256, (3, 3), activation='relu', name='block3_conv1')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv3_2')(x)
+    x = Conv2D(256, (3, 3), activation='relu', name='block3_conv2')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(256, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv3_3')(x)
+    x = Conv2D(256, (3, 3), activation='relu', name='block3_conv3')(x)
+    x = ZeroPadding2D((1, 1))(x)
+    x = Conv2D(256, (3, 3), activation='relu', name='block3_conv4')(x)
     orig_3 = x
     x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv4_1')(x)
+    x = Conv2D(512, (3, 3), activation='relu', name='block4_conv1')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv4_2')(x)
+    x = Conv2D(512, (3, 3), activation='relu', name='block4_conv2')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv4_3')(x)
+    x = Conv2D(512, (3, 3), activation='relu', name='block4_conv3')(x)
+    x = ZeroPadding2D((1, 1))(x)
+    x = Conv2D(512, (3, 3), activation='relu', name='block4_conv4')(x)
     orig_4 = x
     x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv5_1')(x)
+    x = Conv2D(512, (3, 3), activation='relu', name='block5_conv1')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv5_2')(x)
+    x = Conv2D(512, (3, 3), activation='relu', name='block5_conv2')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', kernel_initializer='he_uniform', name='conv5_3')(x)
+    x = Conv2D(512, (3, 3), activation='relu', name='block5_conv3')(x)
+    x = ZeroPadding2D((1, 1))(x)
+    x = Conv2D(512, (3, 3), activation='relu', name='block5_conv4')(x)
     orig_5 = x
     x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 
@@ -133,8 +139,8 @@ def build_model():
 
     outputs = x
     model = Model(inputs=img_input, outputs=outputs)
-    ensure_yolo_weights()
-    model.load_weights('models/vgg16_notop.h5', by_name=True)
+    ensure_vgg_weights()
+    model.load_weights('models/vgg19_notop.h5', by_name=True)
     return model
 
 
