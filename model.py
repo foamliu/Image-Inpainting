@@ -23,49 +23,49 @@ def build_model():
     # Encoder
     img_input = Input(shape=(img_rows, img_cols, channel))
     x = ZeroPadding2D((1, 1))(img_input)
-    x = Conv2D(64, (3, 3), activation='relu', name='block1_conv1')(x)
+    x = Conv2D(64, (3, 3), activation='elu', name='block1_conv1')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(64, (3, 3), activation='relu', name='block1_conv2')(x)
+    x = Conv2D(64, (3, 3), activation='elu', name='block1_conv2')(x)
     orig_1 = x
     x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(128, (3, 3), activation='relu', name='block2_conv1')(x)
+    x = Conv2D(128, (3, 3), activation='elu', name='block2_conv1')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(128, (3, 3), activation='relu', name='block2_conv2')(x)
+    x = Conv2D(128, (3, 3), activation='elu', name='block2_conv2')(x)
     orig_2 = x
     x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(256, (3, 3), activation='relu', name='block3_conv1')(x)
+    x = Conv2D(256, (3, 3), activation='elu', name='block3_conv1')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(256, (3, 3), activation='relu', name='block3_conv2')(x)
+    x = Conv2D(256, (3, 3), activation='elu', name='block3_conv2')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(256, (3, 3), activation='relu', name='block3_conv3')(x)
+    x = Conv2D(256, (3, 3), activation='elu', name='block3_conv3')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(256, (3, 3), activation='relu', name='block3_conv4')(x)
+    x = Conv2D(256, (3, 3), activation='elu', name='block3_conv4')(x)
     orig_3 = x
     x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', name='block4_conv1')(x)
+    x = Conv2D(512, (3, 3), activation='elu', name='block4_conv1')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', name='block4_conv2')(x)
+    x = Conv2D(512, (3, 3), activation='elu', name='block4_conv2')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', name='block4_conv3')(x)
+    x = Conv2D(512, (3, 3), activation='elu', name='block4_conv3')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', name='block4_conv4')(x)
+    x = Conv2D(512, (3, 3), activation='elu', name='block4_conv4')(x)
     orig_4 = x
     x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', name='block5_conv1')(x)
+    x = Conv2D(512, (3, 3), activation='elu', name='block5_conv1')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', name='block5_conv2')(x)
+    x = Conv2D(512, (3, 3), activation='elu', name='block5_conv2')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', name='block5_conv3')(x)
+    x = Conv2D(512, (3, 3), activation='elu', name='block5_conv3')(x)
     x = ZeroPadding2D((1, 1))(x)
-    x = Conv2D(512, (3, 3), activation='relu', name='block5_conv4')(x)
+    x = Conv2D(512, (3, 3), activation='elu', name='block5_conv4')(x)
     orig_5 = x
     x = MaxPooling2D((2, 2), strides=(2, 2))(x)
 
@@ -77,13 +77,16 @@ def build_model():
     xReshaped = Reshape(shape)(x)
     together = Concatenate(axis=1)([origReshaped, xReshaped])
     x = Unpooling()(together)
-    x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', name='deconv5_1',
+    x = Conv2D(512, (kernel, kernel), activation='elu', padding='same', name='deconv5_1',
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
-    x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', name='deconv5_2',
+    x = Conv2D(512, (kernel, kernel), activation='elu', padding='same', name='deconv5_2',
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
-    x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', name='deconv5_3',
+    x = Conv2D(512, (kernel, kernel), activation='elu', padding='same', name='deconv5_3',
+               kernel_initializer='he_uniform')(x)
+    x = BatchNormalization()(x)
+    x = Conv2D(512, (kernel, kernel), activation='elu', padding='same', name='deconv5_4',
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
 
@@ -94,13 +97,16 @@ def build_model():
     xReshaped = Reshape(shape)(x)
     together = Concatenate(axis=1)([origReshaped, xReshaped])
     x = Unpooling()(together)
-    x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', name='deconv4_1',
+    x = Conv2D(512, (kernel, kernel), activation='elu', padding='same', name='deconv4_1',
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
-    x = Conv2D(512, (kernel, kernel), activation='relu', padding='same', name='deconv4_2',
+    x = Conv2D(512, (kernel, kernel), activation='elu', padding='same', name='deconv4_2',
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
-    x = Conv2D(256, (kernel, kernel), activation='relu', padding='same', name='deconv4_3',
+    x = Conv2D(256, (kernel, kernel), activation='elu', padding='same', name='deconv4_3',
+               kernel_initializer='he_uniform')(x)
+    x = BatchNormalization()(x)
+    x = Conv2D(256, (kernel, kernel), activation='elu', padding='same', name='deconv4_4',
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
 
@@ -111,13 +117,16 @@ def build_model():
     xReshaped = Reshape(shape)(x)
     together = Concatenate(axis=1)([origReshaped, xReshaped])
     x = Unpooling()(together)
-    x = Conv2D(256, (kernel, kernel), activation='relu', padding='same', name='deconv3_1',
+    x = Conv2D(256, (kernel, kernel), activation='elu', padding='same', name='deconv3_1',
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
-    x = Conv2D(256, (kernel, kernel), activation='relu', padding='same', name='deconv3_2',
+    x = Conv2D(256, (kernel, kernel), activation='elu', padding='same', name='deconv3_2',
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
-    x = Conv2D(128, (kernel, kernel), activation='relu', padding='same', name='deconv3_3',
+    x = Conv2D(128, (kernel, kernel), activation='elu', padding='same', name='deconv3_3',
+               kernel_initializer='he_uniform')(x)
+    x = BatchNormalization()(x)
+    x = Conv2D(128, (kernel, kernel), activation='elu', padding='same', name='deconv3_4',
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
 
@@ -128,14 +137,14 @@ def build_model():
     xReshaped = Reshape(shape)(x)
     together = Concatenate(axis=1)([origReshaped, xReshaped])
     x = Unpooling()(together)
-    x = Conv2D(128, (kernel, kernel), activation='relu', padding='same', name='deconv2_1',
+    x = Conv2D(128, (kernel, kernel), activation='elu', padding='same', name='deconv2_1',
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
-    x = Conv2D(64, (kernel, kernel), activation='relu', padding='same', name='deconv2_2',
+    x = Conv2D(64, (kernel, kernel), activation='elu', padding='same', name='deconv2_2',
                kernel_initializer='he_uniform')(x)
     x = BatchNormalization()(x)
 
-    x = Conv2D(3, (1, 1), padding='same', name='pred', kernel_initializer='he_uniform')(x)
+    x = Conv2D(3, (1, 1), padding='same', name='pred', activation='sigmoid', kernel_initializer='he_uniform')(x)
 
     outputs = x
     model = Model(inputs=img_input, outputs=outputs)

@@ -66,9 +66,9 @@ class DataGenSequence(Sequence):
 
             x, y = separate(image)
 
-            x = cv.cvtColor(x, cv.COLOR_BGR2RGB)
-            batch_x[i_batch] = x
-            batch_y[i_batch] = y
+            x = x[:, :, ::-1]
+            batch_x[i_batch] = x / 255.
+            batch_y[i_batch] = y / 255.
 
         batch_x = preprocess_input(batch_x)
         return batch_x, batch_y
