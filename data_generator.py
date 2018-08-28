@@ -14,11 +14,14 @@ image_folder = '/mnt/code/ImageNet-Downloader/image/resized'
 
 
 def random_crop(image):
-    full_size = image.shape[0]
-    u = random.randint(0, full_size - img_size)
-    v = random.randint(0, full_size - img_size)
-    image = image[v:v + img_size, u:u + img_size]
-    return image
+    orig_h, orig_w = image.shape[:2]
+    u = random.randint(0, orig_w - img_size)
+    v = random.randint(0, orig_h - img_size)
+    result = np.zeros((img_size, img_size), np.uint8)
+    crop = image[v:v + img_size, u:u + img_size]
+    h, w = crop.shape[:2]
+    result[0:h, 0:w] = crop
+    return result
 
 
 def separate(image):
