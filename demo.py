@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
         out = out[0]
         # print('out: ' + str(out))
-        out = out * 255.0
+        out = out * 256.0
         out = out.astype(np.uint8)
 
         if not os.path.exists('images'):
