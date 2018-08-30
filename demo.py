@@ -52,7 +52,7 @@ if __name__ == '__main__':
             os.makedirs('images')
 
         output = input.copy()
-        output[28:84, 28:84] = out
+        output[32:96, 32:96] = out
 
         cv.imwrite('images/{}_input.png'.format(i), input)
         cv.imwrite('images/{}_output.png'.format(i), output)
