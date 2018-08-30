@@ -12,7 +12,7 @@ from data_generator import random_crop, separate
 from model import build_model
 
 if __name__ == '__main__':
-    model_weights_path = 'models/model.11-0.0337.hdf5'
+    model_weights_path = 'models/model.08-0.0388.hdf5'
     model = build_model()
     model.load_weights(model_weights_path)
 
@@ -52,7 +52,7 @@ if __name__ == '__main__':
             os.makedirs('images')
 
         output = input.copy()
-        output[56:168, 56:168] = out
+        output[28:84, 28:84] = out
 
         cv.imwrite('images/{}_input.png'.format(i), input)
         cv.imwrite('images/{}_output.png'.format(i), output)
