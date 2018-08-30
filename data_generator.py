@@ -5,7 +5,6 @@ from random import shuffle
 import cv2 as cv
 import imutils
 import numpy as np
-from keras.applications.vgg16 import preprocess_input
 from keras.utils import Sequence
 
 from config import batch_size, img_size, channel
