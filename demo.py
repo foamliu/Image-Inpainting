@@ -34,11 +34,11 @@ if __name__ == '__main__':
         gt = image.copy()
         x, y = separate(image)
         input = x.copy()
-        x = cv.cvtColor(x, cv.COLOR_BGR2RGB)
+        x = x[:, :, ::-1]
+        x = x / 256. - 0.5
         x_test = np.empty((1, img_size, img_size, 3), dtype=np.float32)
         x_test[0] = x
         # print('x: ' + str(x))
-        x_test = preprocess_input(x_test)
         # print('x_test: ' + str(x_test))
 
         out = model.predict(x_test)

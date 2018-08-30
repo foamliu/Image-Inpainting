@@ -70,10 +70,9 @@ class DataGenSequence(Sequence):
             x, y = separate(image)
 
             x = x[:, :, ::-1]
-            batch_x[i_batch] = x / 255.
-            batch_y[i_batch] = y / 255.
+            batch_x[i_batch] = x / 256. - 0.5
+            batch_y[i_batch] = y / 256.
 
-        batch_x = preprocess_input(batch_x)
         return batch_x, batch_y
 
     def on_epoch_end(self):
