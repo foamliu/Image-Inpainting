@@ -12,7 +12,7 @@ from data_generator import random_crop, separate
 from model import build_model
 
 if __name__ == '__main__':
-    model_weights_path = 'models/model.08-0.0388.hdf5'
+    model_weights_path = 'models/model.00-0.0279.hdf5'
     model = build_model()
     model.load_weights(model_weights_path)
 
