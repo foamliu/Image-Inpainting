@@ -52,6 +52,7 @@ def get_best_model():
     p = re.compile(pattern)
     files = [f for f in os.listdir('models/') if p.match(f)]
     filename = None
+    epoch = None
     if len(files) > 0:
         epoches = [p.match(f).groups()[0] for f in files]
         losses = [float(p.match(f).groups()[1]) for f in files]
